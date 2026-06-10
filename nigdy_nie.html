@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nigdy nie...</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; margin: 0; position: relative; }
+        .card { width: 90%; max-width: 400px; min-height: 320px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; border: 4px solid #6c5ce7; box-sizing: border-box; }
+        h1 { color: #6c5ce7; margin-bottom: 5px; font-size: 1.8rem; margin-top: 0; }
+        #counter { font-size: 0.9rem; color: #888; margin-bottom: 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        #task { font-size: 1.3rem; font-weight: bold; margin-bottom: 30px; color: #333; min-height: 120px; display: flex; align-items: center; justify-content: center; line-height: 1.5; }
+        button { padding: 15px 30px; font-size: 1rem; cursor: pointer; background: #6c5ce7; color: white; border: none; border-radius: 10px; transition: 0.3s; font-weight: bold; }
+        button:hover { background: #5649c0; }
+        .empty-state { color: #e74c3c !important; }
+        
+        /* Styl dla odnośnika powrotnego na samym dole strony */
+        .footer-link { position: absolute; bottom: 25px; color: #7f8c8d; text-decoration: none; font-size: 0.9rem; font-weight: bold; transition: 0.2s; padding: 10px 20px; background: rgba(255, 255, 255, 0.85); border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
+        .footer-link:hover { color: #6c5ce7; background: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Nigdy nie...</h1>
+    <div id="counter">Wczytywanie talii...</div>
+    <div id="task">Kliknij przycisk, aby odkryć pierwsze stwierdzenie!</div>
+    <button id="drawBtn" onclick="drawTask()">Odkryj kartę</button>
+</div>
+
+<!-- Odnośnik powrotny na dole strony, poza kartą -->
+<a href="index.html" class="footer-link">&larr; Powrót do: „Odważni Nie Piją”</a>
+
+<script>
+    // Twoja spersonalizowana i oczyszczona lista haseł "Nigdy nie..."
+    const allTasks = [
+        "Nigdy nie pociągała mnie postać z kreskówki.",
+        "Nigdy nie tańczyłem na rurze w barze.",
+        "Nigdy nie wyszukiwałem swojego imienia w Google.",
+        "Nigdy nie prześladowałem mojego byłego lub byłej w mediach społecznościowych.",
+        "Nigdy niczego nie ukradłem.",
+        "Nigdy nie stworzyłem fałszywego konta na Instagramie.", 
+        "Nigdy nie skłamałem w moim CV.",
+        "Nigdy nie zostałem wyrzucony z baru ani klubu.",
+        "Nigdy nie mówiłem źle o koledze lub koleżance z pracy.",
+        "Nigdy nie kłóciłem się z szefem.",
+        "Nigdy nie zasnąłem w pracy.",
+        "Nigdy nie całowałem kogoś, kogo dopiero co poznałem.",
+        "Nigdy nie korzystałem z aplikacji randkowej.",
+        "Nigdy nie nauczyłem się tańca z TikToka.",
+        "Nigdy nie śpiewałem publicznie.",
+        "Nigdy nie rozmawiałem sam ze sobą na głos.",
+        "Nigdy nie miałem wymyślonego przyjaciela.",
+        "Nigdy nie miałem kłopotów przez dziadków.",
+        "Nigdy nie postawiłem drinka nieznajomej osobie.",
+        "Nigdy nie spotykałem się z kimś o 5 lat starszym lub młodszym.",
+        "Nigdy nie oglądałem porno.",
+        "Nigdy nie miałem choroby lokomocyjnej.",
+        "Nigdy nie wymyśliłem własnego języka.",
+        "Nigdy nie kupiłem głupiej rzeczy pod wpływem alkoholu.",
+        "Nigdy nie nazwałem kogoś złym imieniem więcej niż raz.",
+        "Nigdy nie byłem zakochany w osobie z pracy.",
+        "Nigdy nie przegapiłem lotu.",
+        "Nigdy nie nazwałem obecnego partnera imieniem eks.",
+        "Nigdy nie uważałem w duchu, że dziecko znajomych jest brzydkie.",
+        "Nigdy nie nosiłem tej samej bielizny dwa dni z rzędu.",
+        "Nigdy nie powiedziaem „kocham cię” jako pierwszy.",
+        "Nigdy nie spędziłem całego dnia bez umycia zębów.",
+        "Nigdy nie podpaliłem czegoś przypadkowo.",
+        "Nigdy nie spróbowałem karmy dla zwierząt.",
+        "Nigdy nie zostałem wystawiony przy próbie przybicia „piątki”.",
+        "Nigdy nie wąchałem celowo własnych bąków.",
+        "Nigdy nie widziałem ducha ani zjawiska paranormalnego.",
+        "Nigdy nie jadłem samej pasty do zębów z tubki.",
+        "Nigdy nie płakałem w miejscu publicznym.",
+        "Nigdy nie ogoliłem głowy na łyso.",
+        "Nigdy nie spóźniłem się na rozmowę kwalifikacyjną.",
+        "Nigdy nie zapomniałem imienia bliskiego współpracownika.",
+        "Nigdy nie założyłem takiego samego stroju jak ktoś inny na imprezie.",
+        "Nigdy nie próbowałem odblokować czyjegoś telefonu bez pozwolenia.",
+        "Nigdy nie napisałem ani nie nagrałem piosenki.",
+        "Nigdy nie zostałem zaatakowany przez zwierzę.",
+        "Nigdy nie spotykałem się z kimś, kogo moi znajomi lub rodzina nienawidzili.",
+        "Nigdy nie wskoczyłem do basenu w pełnym ubraniu.",
+        "Nigdy nie zostałem zwolniony dyscyplinarnie z pracy.",
+        "Nigdy nie farbowałem włosów na szalony kolor (np. różowy).",
+        "Nigdy nie wyłączyłem udostępniania lokalizacji znajomym z ukrycia.",
+        "Nigdy nie płakałem po śmierci fikcyjnej postaci.",
+        "Nigdy nikomu się nie oświadczyłem ani nie otrzymałem oświadczyn.",
+        "Nigdy nie spędziłem wielu godzin na oglądaniu filmików na Instagramie lub TikToku.",
+        "Nigdy nie wyszedłem w piżamie w miejsce publiczne.",
+        "Nigdy nie zerwałem z kimś w sposób, którego do dziś żałuję.",
+        "Nigdy nie usunąłem czegoś z telefonu ze strachu, że partner to zobaczy.",
+        "Nigdy nie miałem erotycznego snu o kimś zupełnie nieoczekiwanym.",
+        "Nigdy nie spotkałem się z kimś na randce, nie znając nawet jego imienia.",
+        "Nigdy nie usunąłem całej historii rozmowy na czacie.",
+        "Nigdy nie przypisałem sobie zasług za czyjąś ciężką pracę.",
+        "Nigdy nie dostałem zakazu wstępu do jakiegoś lokalu lub sklepu.",
+        "Nigdy nie brałem udziału w viralowym wyzwaniu internetowym.",
+        "Nigdy nie byłem chorobliwie zazdrosny o sukcesy swoich przyjaciół.",
+        "Nigdy nie narzekałem za plecami na swojego współlokatora.",
+        "Nigdy nie gotowałem obiadu całkowicie nago.",
+        "Nigdy nie zrobiłem spontanicznego kolczyka lub tatuażu.", 
+        "Nigdy nie używałem fałszywego dowodu tożsamości.",
+        "Nigdy nie zostałem zatrzymany ani aresztowany.",
+        "Nigdy nie zrobiłem z siebie idioty na randce.",
+        "Nigdy nie parsknąłem jedzeniem lub piciem przez nos ze śmiechu.",
+        "Nigdy nie ściągałem na ważnym teście lub egzaminie.",
+        "Nigdy nie spałem nago.",
+        "Nigdy nie dostałem ani nie wysłałem odważnego zdjęcia (nudesa).",
+        "Nigdy nie przesadziłem z alkoholem na pierwszej randce.",
+        "Nigdy nie używałem cudzej szczoteczki do zębów.",
+        "Nigdy nie obgryzałem paznokci u rąk lub u nóg.",
+        "Nigdy nie przykleiłem zużytej gumy pod stół „na później”.",
+        "Nigdy nie zjadłem czegoś z ziemi, co leżało dłużej niż pozwala na to zasada 5 sekund.",
+        "Nigdy nie udawałem obcego akcentu przed ludźmi.",
+        "Nigdy nie upuściłem telefonu prosto do toalety.",
+        "Nigdy nie flirtowałem z kimś tylko po to, żeby dostać darmowego drinka.",
+        "Nigdy nie zwymiotowałem na drugą osobę.",
+        "Nigdy nie zmoczyłem łóżka mając powyżej 15 lat.",
+        "Nigdy nie miałem relacji typu sugar daddy/sugar mommy.",
+        "Nigdy nie prowadziłem samochodu całkowicie nago.",
+        "Nigdy nie pływałem nago w cudzym basenie.",
+        "Nigdy nie wyszedłem na zewnątrz bez żadnego ubrania.",
+        "Nigdy nie płaciłem za treści dla dorosłych (np. OnlyFans).",
+        "Nigdy nie tańczyłem na stole na imprezie.",
+        "Nigdy nie przyszedłem do pracy lub szkoły na ogromnym kacu.",
+        "Nigdy nie flirtowałem z nauczycielem lub profesorem.",
+        "Nigdy nie całowałem się w samolocie.",
+        "Nigdy nie byłem w klubie ze striptizem.",
+        "Nigdy nie udawałem orgazmu.",
+        "Nigdy nie całowałem się ostentacyjnie w miejscu publicznym.",
+        "Nigdy nie związałem się z byłym partnerem mojego przyjaciela.",
+        "Nigdy nie miałem relacji typu friends with benefits.",
+        "Nigdy nie spałem z kimś już na pierwszej randce.",
+        "Nigdy nie miałem przygody na jedną noc.",
+        "Nigdy nie spałem z kimś tej samej płci.",
+        "Nigdy nie zostałem przyłapany na robieniu czegoś intymnego.",
+        "Nigdy nie wysłałem pikantnej wiadomości do niewłaściwej osoby.",
+        "Nigdy nie wszedłem przez pomyłkę do publicznej toalety dla przeciwnej płci.",
+        "Nigdy nie odgrywałem nietypowych ról w sypialni.",
+        "Nigdy nie zasnąłem w trakcie zbliżenia.",
+        "Nigdy nie byłem na plaży dla nudystów.",
+        "Nigdy nie dostałem ani nie zrobiłem komuś lap dance.",
+        "Nigdy nie zrobiłem sobie odważnego selfie pod prysznicem.",
+        "Nigdy nie dałem swojego numeru telefonu komuś całkowicie obcemu.",
+        "Nigdy nie flirtowałem z barmanem/barmanką.",
+        "Nigdy nie miałem klasycznego spotkania typu „Netflix and chill”.",
+        "Nigdy nie odbyłem tzw. spaceru wstydu (walk of shame) o poranku.",
+        "Nigdy nie wróciłem do swojego eks.",
+        "Nigdy nie miałem intymnego przezwiska.",
+        "Nigdy nie całowałem więcej niż jednej osoby w ciągu jednej doby.",
+        "Nigdy nie uciekłem z zajęć lub lekcji.",
+        "Nigdy nie korzystałem z cudzego konta Netflix bez wiedzy właściciela.",
+        "Nigdy nie udawałem, że dostałem pilnego SMS-a, żeby uciec ze złej randki.",
+        "Nigdy nie przeczytałem całej książki w jeden dzień.",
+        "Nigdy nie zaliczyłem bolesnego i żenującego upadku w miejscu publicznym.",
+        "Nigdy nie myślałem poważnie o operacji plastycznej.",
+        "Nigdy nie krzyczałem głośno na horrorze w kinie.",
+        "Nigdy nie wdawałem się w bójkę fizyczną.",
+        "Nigdy nie udawałem chorego, żeby wykręcić się z planów.",
+        "Nigdy nie wlałem na kogoś specjalnie drinka.",
+        "Nigdy nie podobał mi się rodzic mojego przyjaciela.",
+        "Nigdy nie miałem fatalnie wykonanego tatuażu.",
+        "Nigdy nie spróbowałem marihuany ani innych używek.",
+        "Nigdy nie udawałem płaczu, żeby coś zyskać.",
+        "Nigdy nie zdradziłem komuś głębokiego sekretu, który miał zostać tylko między nami.",
+        "Nigdy nie zasnąłem w autobusie/pociągu i nie przejechałem swojego przystanku.",
+        "Nigdy nie zapomniałem umyć rąk po wyjściu z toalety.",
+        "Nigdy nie zatrułem się jedzeniem tak potężnie, że żałowałem, że żyję.",
+        "Nigdy nie podałem nikomu fałszywego numeru telefonu.",
+        "Nigdy nie skłamałem, mówiąc, że podoba mi się nietrafiony prezent.",
+        "Nigdy nikogo nie zdradziłem w związku.",
+        "Nigdy nie uciekłem z restauracji bez płacenia rachunku.",
+        "Nigdy nie podobało mi się rodzeństwo mojego przyjaciela.",
+        "Nigdy nie oddałem komuś jako prezent czegoś, co sam wcześniej dostałem.",
+        "Nigdy nie zapłaciłem za karnet na siłownię, na której ani razu się nie pojawiłem.",
+        "Nigdy nie dzwoniłem do kogoś dla żartu (prank call).",
+        "Nigdy nie udawałem kogoś innego w internecie.",
+        "Nigdy nie obciąłem sobie sam włosów lub grzywki z katastrofalnym skutkiem.",
+        "Nigdy nie zostałem bezczelnie oszukany przez naciągacza.",
+        "Nigdy nie okłamałem rodziców w dorosłym życiu.",
+        "Nigdy nie powiedziałem złego imienia w łóżku.",
+        "Nigdy nie przemawiałem publicznie na weselu.",
+        "Nigdy nie goliłem brwi.",
+        "Nigdy nie gonił mnie agresywny pies.",
+        "Nigdy nie jadłem surowej, nieprzygotowanej ryby.",
+        "Nigdy nie byłem zaręczony.",
+        "Nigdy nie jadłem sam posiłku w eleganckiej restauracji.",
+        "Nigdy nie przestałem obserwować znajomego w social mediach z czystej złośliwości.",
+        "Nigdy nie ukradłem drobnych z portfela rodziców w dzieciństwie.",
+        "Nigdy celowo nie wywołałem dramy lub kłótni w grupie znajomych.",
+        "Nigdy nie kłóciłem się na głos ze swoim zwierzakiem.",
+        "Nigdy celowo ani przypadkowo nie nasikałem do basenu.",
+        "Nigdy nie chorowałem na ospę wietrzną.",
+        "Nigdy nie zakradłem się na festiwal lub do klubu bez biletu.",
+        "Nigdy nie paliłem papierosa ani e-papierosa.",
+        "Nigdy nie miałem relacji trwającej długo w 100% przez internet.",
+        "Nigdy nie całowałem nikogo z całkowicie otwartymi oczami.",
+        "Nigdy nie przekroczyłem limitu zadłużenia na karcie kredytowej.",
+        "Nigdy nie spotykałem się z więcej niż jedną osobą naraz, ukrywając to.",
+        "Nigdy nie szukałem szczegółowych informacji o osobie w Google przed pierwszą randką.",
+        "Nigdy nie naśladowałem kogoś złośliwie za jego plecami.",
+        "Nigdy nie zabrałem rodzica na spotkanie jako osobę towarzyszącą.",
+        "Nigdy nie musiałem ukrywać malinki na szyi (miłosnego ugryzienia).",
+        "Nigdy nie poszedłem na randkę tylko po to, żeby wzbudzić w kimś innym zazdrość.",
+        "Nigdy nie obiecałem komuś, że zadzwonię, wiedząc z góry, że tego nie zrobię.",
+        "Nigdy nie nosiłem bielizny na lewą stronę z braku czystych ubrań.",
+        "Nigdy nie obwiniłem innej osoby lub zwierzaka za swoje bąki.",
+        "Nigdy nie czytałem cudzych listów ani prywatnych wiadomości bez pozwolenia.",
+        "Nigdy nie posikałem się ze śmiechu.",
+        "Nigdy nie śpiewałem piosenki z pełnym przekonaniem, totalnie myląc tekst.",
+        "Nigdy nie zostałem brutalnie odrzucony przy próbie pocałunku.",
+        "Nigdy nie napisałem do kogoś tradycyjnego, papierowego listu miłosnego.",
+        "Nigdy nie skłamałem, że jestem w związku, tylko po to, żeby spławić natręta.",
+        "Nigdy nie próbowałem odgadnąć hasła do telefonu mojego partnera.",
+        "Nigdy nie rozmawiałem przez ponad godzinę z całkowicie przypadkowym nieznajomym.",
+        "Nigdy nie skakałem ze spadochronem ani na bungee."
+    ];
+
+    let availableTasks = [...allTasks];
+
+    const counterElement = document.getElementById('counter');
+    counterElement.innerText = `Pozostało haseł: ${availableTasks.length}`;
+
+    function drawTask() {
+        const taskElement = document.getElementById('task');
+        const btnElement = document.getElementById('drawBtn');
+
+        if (availableTasks.length === 0) {
+            taskElement.innerText = "To już wszystkie hasła! Odśwież stronę, aby zagrać od nowa.";
+            taskElement.classList.add('empty-state');
+            btnElement.style.display = 'none';
+            counterElement.innerText = "Koniec talii";
+            return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * availableTasks.length);
+        taskElement.innerText = availableTasks[randomIndex];
+        availableTasks.splice(randomIndex, 1);
+
+        counterElement.innerText = `Pozostało haseł: ${availableTasks.length}`;
+    }
+</script>
+
+</body>
+</html>
