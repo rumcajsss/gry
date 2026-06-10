@@ -3,43 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nigdy nie...</title>
+    <title>Imprezowe Gry Towarzyskie</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; margin: 0; position: relative; }
-        .card { width: 90%; max-width: 400px; min-height: 320px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; border: 4px solid #6c5ce7; box-sizing: border-box; }
-        h1 { color: #6c5ce7; margin-bottom: 5px; font-size: 1.8rem; margin-top: 0; }
-        #counter { font-size: 0.9rem; color: #888; margin-bottom: 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        #task { font-size: 1.3rem; font-weight: bold; margin-bottom: 30px; color: #333; min-height: 120px; display: flex; align-items: center; justify-content: center; line-height: 1.5; }
-        button { padding: 15px 30px; font-size: 1rem; cursor: pointer; background: #6c5ce7; color: white; border: none; border-radius: 10px; transition: 0.3s; font-weight: bold; }
-        button:hover { background: #5649c0; }
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; margin: 0; position: relative; overflow: hidden; }
+        .card { width: 90%; max-width: 400px; min-height: 320px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; text-align: center; box-sizing: border-box; }
+        
+        /* Styl dla Odważni Nie Piją (Zielony) */
+        .card.green { border: 4px solid #2ecc71; }
+        .card.green h1 { color: #2ecc71; margin-bottom: 5px; font-size: 1.8rem; margin-top: 0; }
+        .card.green button { padding: 15px 30px; font-size: 1rem; cursor: pointer; background: #2ecc71; color: white; border: none; border-radius: 10px; transition: 0.3s; font-weight: bold; }
+        .card.green button:hover { background: #27ae60; }
+
+        /* Styl dla Nigdy nie... (Fioletowy) */
+        .card.purple { border: 4px solid #6c5ce7; }
+        .card.purple h1 { color: #6c5ce7; margin-bottom: 5px; font-size: 1.8rem; margin-top: 0; }
+        .card.purple button { padding: 15px 30px; font-size: 1rem; cursor: pointer; background: #6c5ce7; color: white; border: none; border-radius: 10px; transition: 0.3s; font-weight: bold; }
+        .card.purple button:hover { background: #5649c0; }
+
+        /* Wspólne elementy */
+        .counter { font-size: 0.9rem; color: #888; margin-bottom: 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .task { font-size: 1.3rem; font-weight: bold; margin-bottom: 30px; color: #333; min-height: 120px; display: flex; align-items: center; justify-content: center; line-height: 1.5; }
         .empty-state { color: #e74c3c !important; }
         
-        /* Styl dla odnośnika powrotnego na samym dole strony */
-        .footer-link { position: absolute; bottom: 25px; color: #7f8c8d; text-decoration: none; font-size: 0.9rem; font-weight: bold; transition: 0.2s; padding: 10px 20px; background: rgba(255, 255, 255, 0.85); border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
-        .footer-link:hover { color: #6c5ce7; background: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2); }
+        /* Odnośniki na dole ekranu */
+        .footer-link { position: absolute; bottom: 25px; color: #7f8c8d; text-decoration: none; font-size: 0.9rem; font-weight: bold; transition: 0.2s; padding: 10px 20px; background: rgba(255, 255, 255, 0.85); border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; cursor: pointer; }
+        .footer-link.green-hover:hover { color: #2ecc71; background: white; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2); }
+        .footer-link.purple-hover:hover { color: #6c5ce7; background: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2); }
+        
+        /* Kontenery widoków */
+        .view { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        .view.active { display: flex; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Nigdy nie...</h1>
-    <div id="counter">Wczytywanie talii...</div>
-    <div id="task">Kliknij przycisk, aby odkryć pierwsze stwierdzenie!</div>
-    <button id="drawBtn" onclick="drawTask()">Odkryj kartę</button>
+<!-- WIDOK 1: ODWAŻNI NIE PIJĄ -->
+<div id="view-odwazni" class="view active">
+    <div class="card green">
+        <h1>Odważni Nie Piją</h1>
+        <div id="counter-odwazni" class="counter">Wczytywanie talii...</div>
+        <div id="task-odwazni" class="task">Kliknij przycisk, aby odkryć pierwszą kartę!</div>
+        <button id="drawBtn-odwazni" onclick="drawOdwazni()">Odkryj kartę</button>
+    </div>
+    <div onclick="switchView('nigdy')" class="footer-link green-hover">Przełącz na: „Nigdy nie...” &rarr;</div>
 </div>
 
-<!-- Odnośnik powrotny na dole strony, poza kartą -->
-<a href="https://www.google.com/maps" class="footer-link">&larr; Powrót do: „Odważni Nie Piją”</a>
+<!-- WIDOK 2: NIGDY NIE... -->
+<div id="view-nigdy" class="view">
+    <div class="card purple">
+        <h1>Nigdy nie...</h1>
+        <div id="counter-nigdy" class="counter">Wczytywanie talii...</div>
+        <div id="task-nigdy" class="task">Kliknij przycisk, aby odkryć pierwsze stwierdzenie!</div>
+        <button id="drawBtn-nigdy" onclick="drawNigdy()">Odkryj kartę</button>
+    </div>
+    <div onclick="switchView('odwazni')" class="footer-link purple-hover">&larr; Powrót do: „Odważni Nie Piją”</div>
+</div>
 
 <script>
-    // Twoja spersonalizowana i oczyszczona lista haseł "Nigdy nie..."
-    const allTasks = [
+    // --- BAZA PYTAŃ: ODWAŻNI NIE PIJĄ ---
+    const tasksOdwazni = [
+        "Opowiedz historię o najbardziej żenującej sytuacji z Twojego życia.",
+        "Pokaż bez słów tytuł znanego filmu, a inni muszą zgadnąć.",
+        "Wymień 3 rzeczy, które lubisz w osobie siedzącej po prawej stronie.",
+        "Nie możesz używać litery 'A' w swojej następnej wypowiedzi (przez 1 minutę).",
+        "Wymyśl zabawne ksywki dla każdego z obecnych w pokoju.",
+        "Udawaj przez chwilę, że jesteś kelnerem obsługującym pozostałych graczy.",
+        "Zadaj komuś pytanie, na które musi odpowiedzieć zgodnie z prawdą.",
+        "Pokaż ostatnie zdjęcie w galerii.",
+        "Przeczytaj ostatnią wysłaną wiadomość.",
+        "Opowiedz o swojej największej szkolnej wpadce.",
+        "Powiedz, kto zrobił na Tobie najlepsze pierwsze wrażenie.",
+        "Przez minutę mów szeptem.",
+        "Pokaż ostatni zapisany mem w telefonie.",
+        "Opowiedz o swoim najdziwniejszym śnie.",
+        "Udawaj influencera przez 30 sekund.",
+        "Przez kolejną rundę odpowiadaj tylko pytaniami.",
+        "Powiedz, komu najbardziej ufasz w tym pokoju.",
+        "Zrób śmieszne selfie.",
+        "Opowiedz o najgorszym zakupie, jaki zrobiłeś.",
+        "Udawaj kota przez minutę.",
+        "Powiedz, jaka była Twoja największa porażka.",
+        "Przez minutę mów jak prezenter wiadomości.",
+        "Pokaż swoją najczęściej używaną aplikację.",
+        "Powiedz o jednej rzeczy, której żałujesz.",
+        "Opowiedz najgłupszy dowcip, jaki znasz.",
+        "Kogo z obecnych zabrałbyś na bezludną wyspę?",
+        "Przez minutę mów z zagranicznym akcentem.",
+        "Powiedz o największym kłamstwie, jakie powiedziałeś.",
+        "Pokaż ostatnie wyszukiwanie w Google.",
+        "Powiedz jedną niepopularną opinię.",
+        "Opowiedz o swoim pierwszym zauroczeniu.",
+        "Pozwól grupie wymyślić Ci ksywkę do końca gry.",
+        "Pokaż najstarsze zdjęcie w telefonie.",
+        "Powiedz, czego najbardziej się boisz.",
+        "Przez minutę zachowuj się jak robot.",
+        "Opisz siebie trzema słowami.",
+        "Powiedz, jaka była najbardziej spontaniczna rzecz, którą zrobiłeś.",
+        "Przeczytaj ostatnie powiadomienie z telefonu.",
+        "Udawaj, że prowadzisz własny talk-show.",
+        "Powiedz, kto w grupie ma najlepszy styl.",
+        "Opowiedz swoją największą wtopę w 1 zdaniu.",
+        "Zrób 5 minutową przerwę i milcz.",
+        "Powiedz, co byś zrobił gdybyś był niewidzialny.",
+        "Powiedz, kto jest najbardziej szalony w grupie.",
+        "Zrób głos robota do końca rundy.",
+        "Powiedz coś bardzo poważnym tonem o czymś głupim.",
+        "Opowiedz najdziwniejszy komplement jaki dostałeś.",
+        "Udawaj reportera na żywo.",
+        "Powiedz, kto najgorzej kłamie w grupie.",
+        "Powiedz, co najbardziej Cię wkurza w ludziach.",
+        "Opowiedz o swoim największym przypale w 2 zdaniach.",
+        "Udawaj że jesteś AI przez 1 minutę.",
+        "Powiedz, jaka była Twoja najbardziej spontaniczna decyzja.",
+        "Zrób selfie i pokaż grupie.",
+        "Powiedz, co byś zmienił w swoim życiu.",
+        "Opowiedz o najdziwniejszym miejscu gdzie byłeś.",
+        "Udawaj że jesteś celebrytą.",
+        "Powiedz coś, co poprawi humor grupie.",
+        "Powiedz kto jest najbardziej ogarnięty w grupie.",
+        "Opisz swój dzień jak trailer filmu.",
+        "Powiedz szczerze co myślisz o sobie.",
+        "Powiedz kto by przeżył apokalipsę z grupy.",
+        "Opowiedz o swojej największej wpadce społecznej.",
+        "Udawaj że prowadzisz podcast.",
+        "Zrób 10 przysiadów powoli.",
+        "Powiedz kto ma najlepsze poczucie humoru.",
+        "Opowiedz o swoim pierwszym crushu.",
+        "Udawaj nauczyciela matematyki.",
+        "Powiedz coś bardzo dziwnego ale serio.",
+        "Powiedz co byś zrobił za milion zł.",
+        "Opisz siebie jako zwierzę.",
+        "Udawaj że jesteś NPC z gry.",
+        "Powiedz najdziwniejszy fakt o sobie.",
+        "Zrób 20 sekund ciszy i patrz w kamerę.",
+        "Powiedz kto w grupie najwięcej gada.",
+        "Opowiedz coś co brzmi nieprawdopodobnie ale jest prawdziwe."
+    ];
+
+    // --- BAZA PYTAŃ: NIGDY NIE... ---
+    const tasksNigdy = [
         "Nigdy nie pociągała mnie postać z kreskówki.",
         "Nigdy nie tańczyłem na rurze w barze.",
         "Nigdy nie wyszukiwałem swojego imienia w Google.",
         "Nigdy nie prześladowałem mojego byłego lub byłej w mediach społecznościowych.",
         "Nigdy niczego nie ukradłem.",
-        "Nigdy nie stworzyłem fałszywego konta na Instagramie.", 
+        "Nigdy nie stworzyłem fałszywego konta na Instagramie.",
         "Nigdy nie skłamałem w moim CV.",
         "Nigdy nie zostałem wyrzucony z baru ani klubu.",
         "Nigdy nie mówiłem źle o koledze lub koleżance z pracy.",
@@ -100,7 +208,7 @@
         "Nigdy nie byłem chorobliwie zazdrosny o sukcesy swoich przyjaciół.",
         "Nigdy nie narzekałem za plecami na swojego współlokatora.",
         "Nigdy nie gotowałem obiadu całkowicie nago.",
-        "Nigdy nie zrobiłem spontanicznego kolczyka lub tatuażu.", 
+        "Nigdy nie zrobiłem spontanicznego kolczyka lub tatuażu.",
         "Nigdy nie używałem fałszywego dowodu tożsamości.",
         "Nigdy nie zostałem zatrzymany ani aresztowany.",
         "Nigdy nie zrobiłem z siebie idioty na randce.",
@@ -125,7 +233,7 @@
         "Nigdy nie płaciłem za treści dla dorosłych (np. OnlyFans).",
         "Nigdy nie tańczyłem na stole na imprezie.",
         "Nigdy nie przyszedłem do pracy lub szkoły na ogromnym kacu.",
-        "Nigdy nie flirtowałem z nauczycielem lub profesorem.",
+        "Nigdy nie flirtowałem zauczycielem lub profesorem.",
         "Nigdy nie całowałem się w samolocie.",
         "Nigdy nie byłem w klubie ze striptizem.",
         "Nigdy nie udawałem orgazmu.",
@@ -151,7 +259,7 @@
         "Nigdy nie miałem intymnego przezwiska.",
         "Nigdy nie całowałem więcej niż jednej osoby w ciągu jednej doby.",
         "Nigdy nie uciekłem z zajęć lub lekcji.",
-        "Nigdy nie korzystałem z cudzego konta Netflix bez wiedzy właściciela.",
+        "Nigdy nie korzystałem z cudzego konto Netflix bez wiedzy właściciela.",
         "Nigdy nie udawałem, że dostałem pilnego SMS-a, żeby uciec ze złej randki.",
         "Nigdy nie przeczytałem całej książki w jeden dzień.",
         "Nigdy nie zaliczyłem bolesnego i żenującego upadku w miejscu publicznym.",
@@ -176,7 +284,7 @@
         "Nigdy nie oddałem komuś jako prezent czegoś, co sam wcześniej dostałem.",
         "Nigdy nie zapłaciłem za karnet na siłownię, na której ani razu się nie pojawiłem.",
         "Nigdy nie dzwoniłem do kogoś dla żartu (prank call).",
-        "Nigdy nie udawałem kogoś innego w internecie.",
+        "Nigdy nie udawałem kogoś innego w internetach.",
         "Nigdy nie obciąłem sobie sam włosów lub grzywki z katastrofalnym skutkiem.",
         "Nigdy nie zostałem bezczelnie oszukany przez naciągacza.",
         "Nigdy nie okłamałem rodziców w dorosłym życiu.",
@@ -218,28 +326,63 @@
         "Nigdy nie skakałem ze spadochronem ani na bungee."
     ];
 
-    let availableTasks = [...allTasks];
+    // Aktywne kopie talii (do ubywania kart)
+    let availOdwazni = [...tasksOdwazni];
+    let availNigdy = [...tasksNigdy];
 
-    const counterElement = document.getElementById('counter');
-    counterElement.innerText = `Pozostało haseł: ${availableTasks.length}`;
+    // Ładowanie liczników na starcie
+    const countOdwazni = document.getElementById('counter-odwazni');
+    const countNigdy = document.getElementById('counter-nigdy');
+    countOdwazni.innerText = `Pozostało kart: ${availOdwazni.length}`;
+    countNigdy.innerText = `Pozostało haseł: ${availNigdy.length}`;
 
-    function drawTask() {
-        const taskElement = document.getElementById('task');
-        const btnElement = document.getElementById('drawBtn');
+    // Funkcja losująca dla Odważni Nie Piją
+    function drawOdwazni() {
+        const taskEl = document.getElementById('task-odwazni');
+        const btnEl = document.getElementById('drawBtn-odwazni');
 
-        if (availableTasks.length === 0) {
-            taskElement.innerText = "To już wszystkie hasła! Odśwież stronę, aby zagrać od nowa.";
-            taskElement.classList.add('empty-state');
-            btnElement.style.display = 'none';
-            counterElement.innerText = "Koniec talii";
+        if (availOdwazni.length === 0) {
+            taskEl.innerText = "To już wszystkie karty! Odśwież stronę, aby zagrać od nowa.";
+            taskEl.classList.add('empty-state');
+            btnEl.style.display = 'none';
+            countOdwazni.innerText = "Koniec talii";
             return;
         }
 
-        const randomIndex = Math.floor(Math.random() * availableTasks.length);
-        taskElement.innerText = availableTasks[randomIndex];
-        availableTasks.splice(randomIndex, 1);
+        const idx = Math.floor(Math.random() * availOdwazni.length);
+        taskEl.innerText = availOdwazni[idx];
+        availOdwazni.splice(idx, 1);
+        countOdwazni.innerText = `Pozostało kart: ${availOdwazni.length}`;
+    }
 
-        counterElement.innerText = `Pozostało haseł: ${availableTasks.length}`;
+    // Funkcja losująca dla Nigdy Nie
+    function drawNigdy() {
+        const taskEl = document.getElementById('task-nigdy');
+        const btnEl = document.getElementById('drawBtn-nigdy');
+
+        if (availNigdy.length === 0) {
+            taskEl.innerText = "To już wszystkie hasła! Odśwież stronę, aby zagrać od nowa.";
+            taskEl.classList.add('empty-state');
+            btnEl.style.display = 'none';
+            countNigdy.innerText = "Koniec talii";
+            return;
+        }
+
+        const idx = Math.floor(Math.random() * availNigdy.length);
+        taskEl.innerText = availNigdy[idx];
+        availNigdy.splice(idx, 1);
+        countNigdy.innerText = `Pozostało haseł: ${availNigdy.length}`;
+    }
+
+    // Płynne przełączanie widoków za pomocą JavaScript
+    function switchView(viewName) {
+        if (viewName === 'nigdy') {
+            document.getElementById('view-odwazni').classList.remove('active');
+            document.getElementById('view-nigdy').classList.add('active');
+        } else {
+            document.getElementById('view-nigdy').classList.remove('active');
+            document.getElementById('view-odwazni').classList.add('active');
+        }
     }
 </script>
 
